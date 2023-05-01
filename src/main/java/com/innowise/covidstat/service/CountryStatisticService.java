@@ -9,4 +9,5 @@ public interface CountryStatisticService {
 
     Uni<List<CountryStatistic>> getCountryStatisticList(
         List<String> countryNames, Instant from, Instant to);
+
 }

@@ -4,6 +4,7 @@ import com.innowise.covidstat.model.CountryDayStatistic;
 import com.innowise.covidstat.model.CountryStatistic;
 import com.innowise.covidstat.service.CountryStatisticService;
 import com.innowise.covidstat.service.DayStatisticService;
+import io.quarkus.cache.CacheResult;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -21,15 +22,17 @@ public class CountryStatisticServiceImpl implements CountryStatisticService {
     public Uni<List<CountryStatistic>> getCountryStatisticList(
         List<String> countryNames, Instant from, Instant to) {
 
-        var stream = countryNames.parallelStream()
-            .map(country -> dayStatisticService.getDayStatList(country, from, to))
-            .map(this::getCountryStatistic);
+        var statStream = countryNames.parallelStream()
+            .map(country -> getCountryStatistic(country, from, to));
 
-        return Uni.join().all(stream.toList()).andFailFast();
+        return Uni.join().all(statStream.toList()).andFailFast();
     }
 
-    private Uni<CountryStatistic> getCountryStatistic(
-        Uni<List<CountryDayStatistic>> dayStats) {
+    @CacheResult(cacheName = "country-stat-cache")
+    Uni<CountryStatistic> getCountryStatistic(
+        String countryName, Instant from, Instant to) {
+
+        var dayStats = dayStatisticService.getDayStatList(countryName, from, to);
 
         return dayStats.onItem().transform(stats -> {
 

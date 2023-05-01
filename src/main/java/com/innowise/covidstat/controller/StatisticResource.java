@@ -6,7 +6,6 @@ import com.innowise.covidstat.service.CountryStatisticService;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -18,14 +17,6 @@ public class StatisticResource {
 
     @Inject
     CountryStatisticService countryStatisticService;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String sayHi() {
-
-        return "Hello!";
-    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
