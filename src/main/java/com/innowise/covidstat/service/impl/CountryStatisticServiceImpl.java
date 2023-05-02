@@ -23,10 +23,13 @@ public class CountryStatisticServiceImpl implements CountryStatisticService {
     public Uni<List<CountryStatistic>> getCountryStatisticList(
         List<String> countryNames, Instant from, Instant to) {
 
-        var statStream = countryNames.stream()
-            .map(countryName -> getCountryStatistic(countryName, from, to));
+        var stats = countryNames.stream()
+            .map(countryName -> getCountryStatistic(countryName, from, to))
+            .toList();
 
-        return Uni.join().all(statStream.toList()).andFailFast()
+        if (stats.isEmpty()) return Uni.createFrom().item(List.of());
+
+        return Uni.join().all(stats).andFailFast()
             .onItem().invoke(statList -> statList.remove(null));
     }
 
