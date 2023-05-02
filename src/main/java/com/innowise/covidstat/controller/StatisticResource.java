@@ -11,6 +11,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.util.List;
+import org.jboss.resteasy.reactive.ResponseStatus;
 
 @Path("/api/stat")
 public class StatisticResource {
@@ -19,6 +20,7 @@ public class StatisticResource {
     CountryStatisticService countryStatisticService;
 
     @POST
+    @ResponseStatus(201)
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Uni<List<CountryStatistic>> requestCountryStatistic(StatisticRequest statisticRequest) {
